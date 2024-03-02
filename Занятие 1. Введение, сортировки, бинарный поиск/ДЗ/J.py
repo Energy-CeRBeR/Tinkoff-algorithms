@@ -1,89 +1,49 @@
-def L(k):
-    return ((n - 1) * m * n + (k + 1) * n) * k / 2
-
-
-def R(k):
-    return ((n - 1) * m * n + (k + 1 + m) * n) * (m - k) / 2
-
-
-def U(k):
-    return (k * m ** 2 + m) * k / 2
-
-
-def D(k):
-    return ((k + n) * m ** 2 + m) * (n - k) / 2
-
-
-def binary_search_V():
-    left = 0
-    right = m
-    middle = (left + right) // 2
-    result = [abs(L(middle) - R(middle)), 0]
-    while left < right:
-        #print(middle)
-        l = L(middle)
-        r = R(middle)
-        if l <= r and R(middle + 1) < L(middle + 1):
-            #print(L(middle + 1), R(middle + 1))
-            if abs(L(middle + 1) - R(middle + 1)) < abs(r - l):
-                middle += 1
-            #print(middle, "middle LR")
-            return tuple([abs(R(middle) - L(middle)), middle])
-
-        elif l < r:
-            left = middle + 1
-        else:
-            right = middle - 1
-    
-        if abs(L(middle) - R(middle)) < result[0]:
-            result[0] = abs(L(middle) - R(middle))
-            result[1] = middle
-            
-        middle = (left + right) // 2
-
-    return tuple(result)
-
-
-def binary_search_H():
-    left = 0
-    right = m
-    middle = (left + right) // 2
-    result = [abs(U(middle) - D(middle)), 0]
-    while left < right:
-        #print(middle)
-        u = U(middle)
-        d = D(middle)
-        #print(u, d, middle, "UD")
-        if u == d:
-            return middle
-
-        if u < d and D(middle + 1) < U(middle + 1):
-            if abs(U(middle + 1) - D(middle + 1)) < abs(d - u):
-                middle += 1
-            return tuple([abs(U(middle) - D(middle)), middle])
-
-        elif u < d:
-            left = middle + 1
-        else:
-            right = middle - 1
-        
-        if abs(U(middle) - D(middle)) < result[0]:
-            result[0] = abs(U(middle) - D(middle))
-            result[1] = middle
-            
-        middle = (left + right) // 2
-
-    return tuple(result)
-
-
 t = int(input())
-for _ in range(t):
-    n, m = map(int, input().split())
-    res1 = binary_search_V()
-    res2 = binary_search_H()
-    if res1[0] < res2[0]:
-        print("V", res1[1] + 1)
-    else:
-        print("H", res2[1] + 1)
+INF = 10 ** 40
 
-    
+for i in range(1, t + 1):
+    sx, sy = map(int, input().split())
+    ans = INF
+    ansS = ""
+    n = sx * sy
+    total = n * (n + 1)
+    total1 = (1 + (n - sy + 1)) * sx
+
+    cl, cr = 0, sy
+    cla, cra = 0, total
+    while cr - cl > 1:
+        mid = (cl + cr) >> 1
+        s1 = (total1 + sx * (mid - 1)) * mid
+        if s1 > total - s1:
+            cr = mid
+            cra = s1
+        else:
+            cl = mid
+            cla = s1
+    if abs(cla - (total - cla)) < ans:
+        ans = abs(cla - (total - cla))
+        ansS = "V " + str(cl + 1)
+    if abs(cra - (total - cra)) < ans:
+        ans = abs(cra - (total - cra))
+        ansS = "V " + str(cr + 1)
+
+    cl, cr = 0, sx
+    cla, cra = 0, total
+    while cr - cl > 1:
+        mid = (cl + cr) >> 1
+        cnt = mid * sy
+        s1 = cnt * (cnt + 1)
+        if s1 > total - s1:
+            cr = mid
+            cra = s1
+        else:
+            cl = mid
+            cla = s1
+    if abs(cla - (total - cla)) < ans:
+        ans = abs(cla - (total - cla))
+        ansS = "H " + str(cl + 1)
+    if abs(cra - (total - cra)) < ans:
+        ans = abs(cra - (total - cra))
+        ansS = "H " + str(cr + 1)
+
+    print(ansS)
