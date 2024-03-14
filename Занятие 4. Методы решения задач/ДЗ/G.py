@@ -4,19 +4,19 @@ cur_position = []
 flag = False
 for i in range(n):
     t = list(map(int, input().split()))
-    t1 = 60 * t[0] + t[1]
-    t2 = 60 * t[2] + t[3]
+    t1 = 3600 * t[0] + 60 * t[1] + t[2]
+    t2 = 3600 * t[3] + 60 * t[4] + t[5]
     if t1 < t2:
         a.append([[t1, t2]])
     elif t1 > t2:
-        a.append([[t1, 1440], [0, t2]])
+        a.append([[t1, 86400], [0, t2]])
         if not flag:
-            cur_position = [[t1, 1440], [0, t2]]
+            cur_position = [[t1, 86400], [0, t2]]
             flag = True
 a.sort()
 
 if len(a) == 0:
-    print(1440)
+    print(86400)
 else:
     if not flag:
         cur_position = a[0]
