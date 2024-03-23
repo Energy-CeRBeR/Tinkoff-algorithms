@@ -1,15 +1,19 @@
-def solve(x):
-    if x == 1 or x == n ** 2:
-        return int(x ** 0.5)
-    return 1 + (x - 1) // 2 + (x - 1) % 2
+def get_count(md):
+    count = 0
+    for i in range(1, n + 1):
+        count += min(md // i, n)
+    return count
 
 
 n, k = map(int, input().split())
-a = [[i * j for j in range(1, n + 1)] for i in range(1, n + 1)]
-for q in a:
-    print(*q, sep="\t")
 
+left = 1
+right = n * n
+while left < right:
+    middle = (left + right) // 2
+    if get_count(middle) < k:
+        left = middle + 1
+    else:
+        right = middle
 
-
-
-
+print(left)

@@ -1,22 +1,27 @@
-n = int(input())
-a = []
-for _ in range(n):
-    t = list(map(int, input().split()))
-    t1 = 3600 * t[0] + 60 * t[1] + t[2]
-    t2 = 3600 * t[3] + 60 * t[4] + t[5]
-    if t1 < t2:
-        a.append([t1, t2])
-    elif t1 > t2:
-        a.append([t1, 86400])
-        a.append([0, t2])
+n, c = map(int, input().split())
+times = list()
+for i in range(1, n + 1):
+    s = input().split()
+    start = int(s[0])
+    end = start + int(s[1])
+    times.append((start, end, i))
 
-a.sort()
-start_line = a[0][0]
-end_line = a[0][1]
-for i in range(1, len(a)):
-    if a[i][0] > start_line:
-        start_line = a[i][0]
-    if a[i][1] < end_line:
-        end_line = a[i][1]
+times = sorted(times, key=lambda x: x[1])
 
-print(start_line - end_line)
+ans = []
+cur_info = times.pop(0)
+start = cur_info[0]
+end = cur_info[1]
+ans.append(cur_info[2])
+cur_end = end
+while len(times) > 0:
+    cur_info = times.pop(0)
+    start = cur_info[0]
+    end = cur_info[1]
+    if start >= cur_end:
+        ans.append(cur_info[2])
+        cur_end = end
+
+print(len(ans) * c)
+print(len(ans))
+print(*ans, sep=" ")
