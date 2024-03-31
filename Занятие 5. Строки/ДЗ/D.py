@@ -13,5 +13,5 @@ def cyclic_shifts(s):
     return mn_s
 
 
-s = input()
+s = "".join(random.choice(string.ascii_lowercase) for _ in range(10 ** 5))
 print(cyclic_shifts(s))
