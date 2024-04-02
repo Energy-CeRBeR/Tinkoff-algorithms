@@ -1,95 +1,70 @@
-#include <cstdio>
-
-#include <vector>
-
-#include <map>
-
-#include <queue>
-
-#include <string>
-
-#pragma warning(disable : 4996)
-
-
-
+#include <bits/stdc++.h>
 using namespace std;
 
+const int Maxx = 100005;
+int N;
+vector<pair<int, int> > Graph[Maxx];
 
+/// Dijkartas algorithm to find the shortest distance
+void Dijkartas(int source)
+{
+	priority_queue<pair<int, int>, vector<pair<int, int> >,
+								greater<pair<int, int> > > PQ;
 
-int main() {
+	// Initialize all distances to be infinity
+	vector<int> Distance(N + 2, 1e9);
 
-    int nMoves;
+	// Push source in Priority Queue
+	PQ.push(make_pair(0, source));
+	int src = source;
+	Distance[src] = 0;
+	while (!PQ.empty()) {
+		int current = PQ.top().second;
+		PQ.pop();
+		for (auto& neighbours : Graph[current]) {
+			int v = neighbours.first;
+			int weight = neighbours.second;
+			if (Distance[v] > Distance[current] + weight) {
+				Distance[v] = Distance[current] + weight;
+				PQ.push(make_pair(Distance[v], v));
+			}
+		}
+	}
 
-    scanf("%d", &nMoves);
+	cout << 1 + Distance[0] << endl;
+	return;
+}
 
-    map <string, vector<string>> move;  // для реакций
+// Function to calculate the minimum possible sum of digits
+void minSumDigits(int N)
+{
+	// Build a graph of N vertices with edge weight 1
+	for (int i = 1; i <= N; ++i) {
+		int From = (i) % N;
+		int To = (i + 1) % N;
+		int Wt = 1;
+		Graph[From].push_back(make_pair(To, Wt));
+	}
 
-    for (int i = 0; i < nMoves; i++) {
+	// In the same graph add weights 0 to 10's multiple of node X
+	for (int i = 1; i <= N; ++i) {
+		int From = (i) % N;
+		int To = (10 * i) % N;
+		int Wt = 0;
+		Graph[From].push_back(make_pair(To, Wt));
+	}
 
-        char bufferFrom[21];
+	// Run dijkartas to find the shortest distance from 1 to 0
+	Dijkartas(1);
+	return;
+}
 
-        char bufferTo[21];
+// Driver Code
+int main()
+{
+    cin >> N;
 
-        scanf("%20s -> %20s", bufferFrom, bufferTo); // смотрите как читает символы!!!
+	minSumDigits(N);
 
-        string from(bufferFrom);       // перегоняем в строки
-
-        string to(bufferTo);
-
-        move[from].push_back(to);      // реакцию в map
-
-    }
-
-    char bufferFrom[21];
-
-    char bufferTo[21];
-
-    scanf("%20s", bufferFrom);
-
-    string from(bufferFrom);       // перегоняем в строки
-
-    scanf("%20s", bufferTo);
-
-    string to(bufferTo);
-
-    map<string, int> len;
-
-    queue<string> q;
-
-    len[from] = 0;                 // стартовую позицию в map
-
-    q.push(from);                  // и в очередь
-
-    while (!q.empty()) {
-
-        string cur = q.front();    // достаем из очереди очередную хрень
-
-        q.pop();
-
-        if (cur == to) {
-
-            printf("%d", len[cur]);  // мы нашли всю цепочку и печатаем ее длину
-
-            return 0;
-
-        }
-
-        for (string next : move[cur]) {  // по массиву с реакциями для этой хрени
-
-            if (len.count(next) == 0) {   // если в len  такой записи вообще нет
-
-                len[next] = len[cur] + 1; // то нужно ее создать
-
-                q.push(next);
-
-            }
-
-        }
-
-    }
-
-    printf("-1");
-
-    return 0;
-
+	return 0;
 }
