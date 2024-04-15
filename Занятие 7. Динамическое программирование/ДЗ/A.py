@@ -1,25 +1,11 @@
 n = int(input())
-coasts = list(map(int, input().split()))
-ans = 0
-cur_position = 0
-while cur_position <= n - 1:
-    coast_1 = coasts[cur_position]
-    if cur_position + 1 <= n - 1:
-        coast_2 = coasts[cur_position + 1]
-        if coast_1 < coast_2:
-            ans += coast_1
-            cur_position += 1
-        else:
-            ans += coast_2
-            cur_position += 2
-    else:
-        ans += coast_1
-        cur_position += 1
+costs = list(map(int, input().split()))
 
-print(ans)
+dp = [0] * n
+dp[0] = costs[0]
+if n >= 2:
+    dp[1] = costs[1]
+    for i in range(2, n):
+        dp[i] = costs[i] + min(dp[i - 1], dp[i - 2])
 
-'''
-6
-1 2 2 3 5 1
-Выводит 7, можно сделать 6
-'''
+print(dp[n - 1])
