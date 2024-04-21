@@ -1,56 +1,34 @@
-from collections import deque
+def main():
+    # Step 1: Parse the input
+    N, M = map(int, input().split())
+    existing_lines = [tuple(map(int, input().split())) for _ in range(M)]
+    K = int(input())
+    proposals = [tuple(map(int, input().split())) for _ in range(K)]
+    P = int(input())
+    requirements = [tuple(map(int, input().split())) for _ in range(P)]
 
+    # Step 2: Simulate the network with existing lines
+    network = {}
+    for u, v, t in existing_lines:
+        network.setdefault(u, []).append((v, t))
+        network.setdefault(v, []).append((u, t))
 
-class MaxQuery:
-    def __init__(self):
-        self.data = deque()
-        self.max_values = deque()
+    # Step 3: Determine which proposals need to be satisfied
+    satisfied_proposals = []
+    for proposal_num, (u, v, t, c) in enumerate(proposals, start=1):
+        if (u not in network or v not in network or
+                all(time > t for _, time in network[u]) or
+                all(time > t for _, time in network[v])):
+            satisfied_proposals.append((c, proposal_num))
 
-    def add_element(self, value):
-        self.data.append(value)
-        i = len(self.max_values) - 1
-        while self.max_values and self.max_values[i] < value:
-            self.max_values[i] = value
-        self.max_values.append(value)
+    # Step 4: Output the result
+    if not satisfied_proposals:
+        print(0)
+    else:
+        min_cost = min(satisfied_proposals)[0]
+        satisfied_proposals = [num for cost, num in satisfied_proposals if cost == min_cost]
+        print(len(satisfied_proposals))
+        print(*sorted(satisfied_proposals))
 
-    def remove_element(self):
-        if self.data[0] == self.max_values[0]:
-            self.max_values.popleft()
-        return self.data.popleft()
-
-    def get_max(self):
-        return self.max_values[0]
-
-    def print_dq(self):
-        print(self.max_values)
-
-
-n, k = map(int, input().split())
-cost = [0] + list(map(int, input().split())) + [0]
-
-dp = [0] * (n + 1)
-dq = MaxQuery()
-dq.add_element(0)
-counter = 1
-for i in range(1, n + 1):
-    print(dp)
-    dp[i] = cost[i - 1] + dq.get_max()
-    dq.add_element(dp[i])
-    if i > k:
-        dq.remove_element()
-
-    dq.print_dq()
-
-mx = dp[n]
-i = n - 1
-res = [n]
-
-while i > 0:
-    if dp[i] == mx:
-        res.append(i)
-        mx -= cost[i - 1]
-    i -= 1
-
-print(dp[n])
-print(len(res) - 1)
-print(*reversed(res))
+if __name__ == "__main__":
+    main()
